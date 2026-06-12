@@ -47,7 +47,7 @@ class Settings:
     # ── CORS / Rate limiting ─────────────────────────────────────────────
     CORS_ORIGINS: list[str] = os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:3000,http://localhost:5173,http://localhost:8080,https://docintel-nt3lq3mx5-siddhant-chastas-projects.vercel.app",
+        "http://localhost:3000,http://localhost:5173,http://localhost:8080",
     ).split(",")
     RATE_LIMIT: str = os.getenv("RATE_LIMIT", "60/minute")
 
