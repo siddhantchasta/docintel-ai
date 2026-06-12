@@ -53,8 +53,7 @@ class EmbedderService:
     def __init__(self) -> None:
         if self._initialised:
             return
-        logger.info("Loading embedding model '%s' …", settings.EMBEDDING_MODEL)
-        self._model = SentenceTransformer(settings.EMBEDDING_MODEL)
+        self._model = None
         self._chroma_client = chromadb.PersistentClient(path=str(settings.CHROMA_DIR))
         self._collection = self._chroma_client.get_or_create_collection(
             name=COLLECTION_NAME,
@@ -66,6 +65,16 @@ class EmbedderService:
             COLLECTION_NAME,
             self._collection.count(),
         )
+
+    @property
+    def model(self) -> SentenceTransformer:
+        if self._model is None:
+            with self._lock:
+                if self._model is None:
+                    logger.info("Loading embedding model '%s' lazily …", settings.EMBEDDING_MODEL)
+                    self._model = SentenceTransformer(settings.EMBEDDING_MODEL)
+                    logger.info("Embedding model loaded successfully.")
+        return self._model
 
     # ── Chunking ──────────────────────────────────────────────────────────
 
@@ -118,7 +127,7 @@ class EmbedderService:
             return 0
 
         texts = [c.text for c in chunks]
-        embeddings = self._model.encode(texts, show_progress_bar=False).tolist()
+        embeddings = self.model.encode(texts, show_progress_bar=False).tolist()
 
         ids = [
             f"{c.doc_id}_p{c.page_number}_c{c.chunk_index}"
@@ -158,7 +167,7 @@ class EmbedderService:
         if self._collection.count() == 0:
             return []
 
-        query_embedding = self._model.encode([query], show_progress_bar=False).tolist()
+        query_embedding = self.model.encode([query], show_progress_bar=False).tolist()
 
         results = self._collection.query(
             query_embeddings=query_embedding,

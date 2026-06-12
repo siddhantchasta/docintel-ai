@@ -45,13 +45,7 @@ async def lifespan(app: FastAPI):
     logger.info("Initialising database …")
     await init_db()
 
-    logger.info("Pre-loading embedding model (this may take a moment) …")
-    try:
-        from services.embedder import EmbedderService
-        EmbedderService()  # singleton — loads model on first call
-        logger.info("Embedding model loaded successfully.")
-    except Exception as exc:
-        logger.warning("Could not pre-load embedding model: %s", exc)
+
 
     logger.info("DocIntel-AI backend is ready ✓")
     yield
@@ -117,11 +111,13 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
 
 if __name__ == "__main__":
     import uvicorn
+    import os
 
+    port = int(os.getenv("PORT", "8000"))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=port,
         reload=True,
         log_level="info",
     )
