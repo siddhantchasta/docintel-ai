@@ -223,7 +223,6 @@ Interactive API docs available at `/docs` when running the backend.
 docintel-ai/
 ├── .env.example                  # Environment variables template
 ├── .gitignore
-├── render.yaml                   # Render deployment config
 ├── README.md
 │
 ├── backend/
@@ -298,15 +297,29 @@ Each document is classified into a structured JSON with 7 dimensions:
 
 ## 🚀 Deployment
 
-### Backend (Render)
-- Docker-based deployment with system dependencies (Tesseract, Poppler)
-- Persistent disk for ChromaDB and document storage
-- `render.yaml` included for one-click deploy
+### Backend (Render Manual Deployment)
+1. **Create Web Service**: In the Render Dashboard, create a new **Web Service** and connect your GitHub repository.
+2. **Environment & Runtime**:
+   - Choose **Docker** as the Runtime.
+   - Set the **Root Directory** / **Docker Build Context** to `backend`.
+   - Set the **Dockerfile Path** to `Dockerfile`.
+3. **Attach Persistent Disk**:
+   - Add a persistent disk to your service.
+   - Set the **Mount Path** to `/data`.
+   - Set the size to `1` GB (or as needed).
+4. **Configure Environment Variables**:
+   - `GEMINI_API_KEY`: Your Google Gemini API key.
+   - `API_KEY`: Your custom backend access key (optional).
+   - `STORAGE_DIR`: `/data/storage`
+   - `CHROMA_DIR`: `/data/chroma_db`
+   - `DATABASE_URL`: `sqlite+aiosqlite:////data/docintel.db`
+   - `CORS_ORIGINS`: Your frontend URL (e.g. `https://your-app.vercel.app`).
 
 ### Frontend (Vercel)
-- Standard Next.js deployment
-- Set `NEXT_PUBLIC_API_URL` to your Render backend URL
-- Set `NEXT_PUBLIC_API_KEY` to match your backend API key
+- Standard Next.js deployment.
+- Set the following environment variables in Vercel:
+  - `NEXT_PUBLIC_API_URL` to your Render backend URL.
+  - `NEXT_PUBLIC_API_KEY` to match the backend `API_KEY` you configured.
 
 ---
 
