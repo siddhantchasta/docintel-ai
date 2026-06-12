@@ -128,6 +128,8 @@ class EmbedderService:
 
         texts = [c.text for c in chunks]
         embeddings = self.model.encode(texts, show_progress_bar=False).tolist()
+        import gc
+        gc.collect()
 
         ids = [
             f"{c.doc_id}_p{c.page_number}_c{c.chunk_index}"
@@ -168,6 +170,8 @@ class EmbedderService:
             return []
 
         query_embedding = self.model.encode([query], show_progress_bar=False).tolist()
+        import gc
+        gc.collect()
 
         results = self._collection.query(
             query_embeddings=query_embedding,
