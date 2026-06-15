@@ -32,7 +32,7 @@ export default function CitationCard({ citation, onImageClick }: CitationCardPro
         alt={`${citation.document_name} page ${citation.page_number}`}
         loading="lazy"
         onError={(e) => {
-          // Replace broken image with a placeholder div
+          // Replace broken image with a placeholder div containing a clean SVG
           const target = e.currentTarget;
           target.style.display = 'none';
           const placeholder = document.createElement('div');
@@ -40,8 +40,12 @@ export default function CitationCard({ citation, onImageClick }: CitationCardPro
           placeholder.style.display = 'flex';
           placeholder.style.alignItems = 'center';
           placeholder.style.justifyContent = 'center';
-          placeholder.style.fontSize = '1.3rem';
-          placeholder.textContent = '📄';
+          placeholder.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          `;
           target.parentElement?.insertBefore(placeholder, target);
         }}
       />

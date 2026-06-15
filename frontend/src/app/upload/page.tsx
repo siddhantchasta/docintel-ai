@@ -183,7 +183,7 @@ export default function UploadPage() {
       <div className="upload-header animate-fade-in-up">
         <h1>Upload Documents</h1>
         <p>
-          Drag &amp; drop your PDFs and images below. AI will automatically
+          Drag &amp; drop your PDFs and images below. The platform will automatically
           parse, classify, and index each document.
         </p>
       </div>
@@ -201,7 +201,22 @@ export default function UploadPage() {
             f.status === 'pending' ? (
               <div key={`pending-${i}`} className="selected-file-item">
                 <div className="selected-file-info">
-                  <span className="selected-file-icon">📄</span>
+                  <span className="selected-file-icon">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ color: 'var(--text-secondary)' }}
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  </span>
                   <div>
                     <div className="selected-file-name">{f.file.name}</div>
                     <div className="selected-file-size">
@@ -243,7 +258,7 @@ export default function UploadPage() {
       {/* Active upload statuses */}
       {activeFiles.length > 0 && (
         <div className="upload-status-list">
-          <div className="section-divider">Processing</div>
+          <div className="section-divider">Processing queue</div>
           {activeFiles.map((f, i) => (
             <UploadStatus key={f.id || `active-${i}`} file={f} />
           ))}
@@ -253,43 +268,51 @@ export default function UploadPage() {
       {/* Previously uploaded documents */}
       {!loadingDocs && existingDocs.length > 0 && (
         <div className="documents-section">
-          <div className="section-divider">Previously Uploaded</div>
-          <div className="documents-grid">
-            {existingDocs.map((doc) => (
-              <div key={doc.id} className="document-card">
-                <div className="document-card-header">
-                  <span className="document-card-icon">📄</span>
-                  <div className="document-card-name">{doc.filename}</div>
-                </div>
-                <div className="document-card-meta">
-                  <span
-                    className={`status-badge status-${doc.status}`}
-                  >
-                    <span className="status-dot" />
-                    {doc.status}
-                  </span>
-                  {doc.page_count > 0 && (
-                    <span>{doc.page_count} pages</span>
-                  )}
-                </div>
-                {doc.classification && (
-                  <div className="classification-summary">
-                    <div className="classification-item">
-                      <span className="classification-label">Type</span>
-                      <span className="classification-value">
-                        {doc.classification.document_type}
+          <div className="section-divider">Document repository</div>
+          <div className="documents-table-container">
+            <table className="documents-table">
+              <thead>
+                <tr>
+                  <th>Document Name</th>
+                  <th>Status</th>
+                  <th>Pages</th>
+                  <th>Type</th>
+                  <th>Topic</th>
+                </tr>
+              </thead>
+              <tbody>
+                {existingDocs.map((doc) => (
+                  <tr key={doc.id}>
+                    <td className="doc-name-cell">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.0"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                      <span className="doc-name-text" title={doc.filename}>{doc.filename}</span>
+                    </td>
+                    <td>
+                      <span className={`status-badge status-${doc.status}`}>
+                        <span className="status-dot" />
+                        {doc.status}
                       </span>
-                    </div>
-                    <div className="classification-item">
-                      <span className="classification-label">Topic</span>
-                      <span className="classification-value">
-                        {doc.classification.topic}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                    </td>
+                    <td>{doc.page_count > 0 ? `${doc.page_count} pages` : '—'}</td>
+                    <td>{doc.classification?.document_type || '—'}</td>
+                    <td>{doc.classification?.topic || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

@@ -83,15 +83,28 @@ export default function FileUploader({ onFilesSelected, disabled }: FileUploader
       />
 
       <div className="dropzone-icon">
-        {dragActive ? '📥' : '📁'}
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
       </div>
 
       <h3>
-        {dragActive ? 'Drop files here' : 'Drag & drop files here'}
+        {dragActive ? 'Drop files to upload' : 'Drag & drop files here'}
       </h3>
-      <p>or click to browse your computer</p>
+      <p>or click to select files from your computer</p>
       <div className="dropzone-accept">
-        Accepted: PDF, PNG, JPG, TIFF
+        Supported file types: PDF, PNG, JPEG, TIFF
       </div>
     </div>
   );

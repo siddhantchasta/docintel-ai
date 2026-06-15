@@ -57,7 +57,7 @@ export default function ChatMessage({ message, onImageClick }: ChatMessageProps)
   return (
     <div className={`message ${isUser ? 'message-user' : 'message-assistant'}`}>
       <div className="message-avatar">
-        {isUser ? '👤' : '🤖'}
+        {isUser ? 'U' : 'AI'}
       </div>
       <div className="message-body">
         <div className="message-bubble">
@@ -67,7 +67,22 @@ export default function ChatMessage({ message, onImageClick }: ChatMessageProps)
         {/* Citations */}
         {!isUser && message.citations && message.citations.length > 0 && (
           <div>
-            <div className="citations-label">📎 Sources</div>
+            <div className="citations-label">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ display: 'inline-block', verticalAlign: 'middle' }}
+              >
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+              </svg>
+              <span>Sources</span>
+            </div>
             <div className="citations-container">
               {message.citations.map((citation, idx) => (
                 <CitationCard
